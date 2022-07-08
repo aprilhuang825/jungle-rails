@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_07_231547) do
+ActiveRecord::Schema.define(version: 2022_07_07_233622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,6 +19,21 @@ ActiveRecord::Schema.define(version: 2022_07_07_231547) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "favorites", id: :serial, force: :cascade do |t|
+    t.integer "item_id"
+    t.integer "buyer_id"
+  end
+
+  create_table "items", id: :serial, force: :cascade do |t|
+    t.integer "seller_id"
+    t.string "name", limit: 255, null: false
+    t.integer "price", default: 0, null: false
+    t.text "description"
+    t.string "photo_url", limit: 255, null: false
+    t.boolean "is_available", default: true, null: false
+    t.boolean "is_featured", default: true, null: false
   end
 
   create_table "line_items", force: :cascade do |t|
@@ -33,12 +48,28 @@ ActiveRecord::Schema.define(version: 2022_07_07_231547) do
     t.index ["product_id"], name: "index_line_items_on_product_id"
   end
 
+  create_table "messages", id: :serial, force: :cascade do |t|
+    t.integer "buyer_id"
+    t.integer "item_id"
+    t.datetime "created_at"
+    t.text "body"
+  end
+
   create_table "orders", force: :cascade do |t|
     t.integer "total_cents"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "stripe_charge_id"
     t.string "email"
+  end
+
+  create_table "persons", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "password_digest"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "products", force: :cascade do |t|
@@ -53,6 +84,14 @@ ActiveRecord::Schema.define(version: 2022_07_07_231547) do
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 
+  create_table "users", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255, null: false
+    t.string "password", limit: 255, null: false
+    t.string "email", limit: 255, null: false
+    t.string "phone", limit: 255, null: false
+  end
+
+  add_foreign_key "items", "users", column: "seller_id", name: "items_seller_id_fkey", on_delete: :cascade
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "products"
   add_foreign_key "products", "categories"
