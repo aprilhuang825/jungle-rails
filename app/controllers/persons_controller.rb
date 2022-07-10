@@ -6,7 +6,7 @@ class PersonsController < ApplicationController
     person = Person.new(person_params)
 
     if person.save
-      session[:person_id] = @person.id
+      session[:person_id] = person.id
       redirect_to :root, notice: 'User created!'
     else
       render :new
