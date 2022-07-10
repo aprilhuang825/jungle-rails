@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 2022_07_07_233622) do
     t.string "email"
   end
 
-  create_table "persons", force: :cascade do |t|
+  create_table "people", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.string "email"
